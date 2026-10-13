@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaifidrishi | Full Stack AI Developer Portfolio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Space Grotesk"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace']
+                    },
+                    colors: {
+                        cyber: {
+                            blue: '#00f0ff',
+                            purple: '#8a2be2',
+                            pink: '#ff007f',
+                            green: '#00ff88',
+                            dark: '#080812',
+                            card: '#0f0f23'
+                        }
+                    },
+                    animation: {
+                        'pulse-glow': 'pulseGlow 3s ease-in-out infinite alternate',
+                        'float': 'floatAnim 4s ease-in-out infinite',
+                        'spin-slow': 'spin 18s linear infinite'
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%': { boxShadow: '0 0 15px rgba(0, 240, 255, 0.25)' },
+                            '100%': { boxShadow: '0 0 35px rgba(255, 0, 127, 0.45)' }
+                        },
+                        floatAnim: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Glassmorphism and Custom Cyberpunk Details */
+        body {
+            background-color: #06060e;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .glass-panel {
+            background: rgba(15, 15, 35, 0.72);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-panel:hover {
+            border-color: rgba(0, 240, 255, 0.5);
+            box-shadow: 0 12px 35px -10px rgba(0, 240, 255, 0.25);
+            transform: translateY(-4px);
+        }
+
+        .neon-text-cyan {
+            text-shadow: 0 0 12px rgba(0, 240, 255, 0.65);
+        }
+
+        .neon-text-pink {
+            text-shadow: 0 0 12px rgba(255, 0, 127, 0.65);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #080812;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #232345;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #00f0ff;
+        }
+
+        /* 3D tilt perspective wrapper */
+        .card-3d-wrapper {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+    </style>
+</head>
+<body class="custom-scrollbar relative antialiased selection:bg-cyber-blue selection:text-black">
+
+    <!-- 3D Interactive Three.js Background -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Top Navigation Bar -->
+    <nav class="fixed top-0 left-0 w-full z-50 glass-panel border-b border-cyber-blue/10 px-6 py-4 transition-all duration-300" id="main-nav">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="#hero" class="flex items-center space-x-2 text-xl font-bold tracking-wider font-mono text-white group">
+                <span class="w-3 h-3 rounded-full bg-cyber-blue shadow-[0_0_10px_#00f0ff] animate-pulse"></span>
+                <span>KAIFI<span class="text-cyber-blue group-hover:text-cyber-pink transition-colors">.IDRISHI</span></span>
+            </a>
+            
+            <div class="hidden md:flex items-center space-x-8 font-mono text-sm text-slate-300">
+                <a href="#about" class="hover:text-cyber-blue transition-colors flex items-center gap-1.5"><i data-lucide="user" class="w-4 h-4"></i> About</a>
+                <a href="#experience" class="hover:text-cyber-blue transition-colors flex items-center gap-1.5"><i data-lucide="briefcase" class="w-4 h-4"></i> Experience</a>
+                <a href="#projects" class="hover:text-cyber-blue transition-colors flex items-center gap-1.5"><i data-lucide="code" class="w-4 h-4"></i> Projects</a>
+                <a href="#skills" class="hover:text-cyber-blue transition-colors flex items-center gap-1.5"><i data-lucide="cpu" class="w-4 h-4"></i> Skills</a>
+                <a href="#contact" class="hover:text-cyber-blue transition-colors flex items-center gap-1.5"><i data-lucide="send" class="w-4 h-4"></i> Contact</a>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <a href="tel:8595701455" class="hidden sm:inline-flex items-center px-4 py-1.5 rounded-full text-xs font-mono font-semibold text-cyber-blue border border-cyber-blue/40 hover:bg-cyber-blue hover:text-black transition-all">
+                    <i data-lucide="phone" class="w-3.5 h-3.5 mr-1.5"></i> +91 8595701455
+                </a>
+                <button id="mobile-menu-btn" class="md:hidden text-white hover:text-cyber-blue" aria-label="Toggle menu">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden pt-4 pb-2 border-t border-slate-800/80 mt-3 font-mono text-sm space-y-3">
+            <a href="#about" class="block text-slate-300 hover:text-cyber-blue">About</a>
+            <a href="#experience" class="block text-slate-300 hover:text-cyber-blue">Experience & Education</a>
+            <a href="#projects" class="block text-slate-300 hover:text-cyber-blue">Projects</a>
+            <a href="#skills" class="block text-slate-300 hover:text-cyber-blue">Skills</a>
+            <a href="#contact" class="block text-cyber-blue font-bold">Contact Now</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <main class="relative z-10">
+        <section id="hero" class="min-h-screen flex items-center justify-center pt-24 px-6 relative overflow-hidden">
+            <div class="max-w-5xl mx-auto text-center flex flex-col items-center">
+                
+                <!-- Status Badge -->
+                <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full glass-panel border border-cyber-green/40 text-cyber-green font-mono text-xs mb-6 shadow-[0_0_15px_rgba(0,255,136,0.2)]">
+                    <span class="w-2 h-2 rounded-full bg-cyber-green animate-ping"></span>
+                    <span>Available for Full-Time Roles & AI/Web Engineering</span>
+                </div>
+
+                <!-- Main Name & Dynamic Subhead -->
+                <h1 class="text-5xl sm:text-7xl md:text-8xl font-black tracking-tight mb-4 text-white">
+                    Kaifi <span class="bg-gradient-to-r from-cyber-blue via-cyber-purple to-cyber-pink bg-clip-text text-transparent">Idrishi</span>
+                </h1>
+
+                <!-- Typewriter Subheading -->
+                <div class="h-10 text-xl sm:text-2xl md:text-3xl font-mono text-slate-300 font-medium flex items-center justify-center space-x-1 mb-8">
+                    <span>I build & deploy</span>
+                    <span id="typewriter" class="text-cyber-blue font-bold neon-text-cyan"></span>
+                    <span class="animate-pulse text-cyber-pink">|</span>
+                </div>
+
+                <p class="max-w-2xl text-slate-400 text-base sm:text-lg mb-10 leading-relaxed font-sans">
+                    Motivated & detail-oriented Full Stack AI Developer specializing in scalable React, Next.js, Node.js, Express, MongoDB, TypeScript, and intelligent automation systems.
+                </p>
+
+                <!-- Action CTAs -->
+                <div class="flex flex-wrap gap-4 justify-center items-center">
+                    <a href="#projects" class="px-7 py-3.5 rounded-xl font-mono font-bold text-black bg-gradient-to-r from-cyber-blue to-teal-300 hover:shadow-[0_0_25px_#00f0ff] transition-all transform hover:-translate-y-1 flex items-center gap-2">
+                        <i data-lucide="layers" class="w-5 h-5"></i> Explore Projects
+                    </a>
+                    <a href="#contact" class="px-7 py-3.5 rounded-xl font-mono font-bold text-white glass-panel border border-cyber-pink/50 hover:bg-cyber-pink/20 hover:border-cyber-pink hover:shadow-[0_0_20px_#ff007f] transition-all transform hover:-translate-y-1 flex items-center gap-2">
+                        <i data-lucide="mail" class="w-5 h-5"></i> Get in Touch
+                    </a>
+                    <a href="https://github.com/kaifidrishi1561-png" target="_blank" rel="noopener noreferrer" class="p-3.5 rounded-xl glass-panel text-slate-300 hover:text-cyber-blue hover:border-cyber-blue transition-all" title="GitHub Profile">
+                        <i data-lucide="github" class="w-5 h-5"></i>
+                    </a>
+                </div>
+
+                <!-- 3D Hint Interactive Indicator -->
+                <div class="mt-16 text-slate-500 font-mono text-xs flex items-center gap-2 animate-bounce">
+                    <i data-lucide="mouse-pointer" class="w-4 h-4 text-cyber-blue"></i>
+                    <span>Move cursor / tap screen to interact with the 3D grid</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-24 px-6 max-w-7xl mx-auto">
+            <div class="flex items-center space-x-3 mb-12">
+                <span class="text-cyber-blue font-mono text-lg font-bold">01.</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-white tracking-wide">ABOUT & OBJECTIVE</h2>
+                <div class="h-[1px] flex-1 bg-gradient-to-r from-cyber-blue/30 to-transparent"></div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                <!-- Objective Card -->
+                <div class="lg:col-span-7 glass-panel p-8 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-2 text-cyber-blue font-mono text-sm mb-4">
+                            <i data-lucide="terminal" class="w-4 h-4"></i>
+                            <span>developer_profile.json</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-4">Crafting High-Impact Web & AI-Driven Platforms</h3>
+                        <p class="text-slate-300 leading-relaxed text-base mb-4 font-sans">
+                            Motivated and detail-oriented Full Stack Developer with hands-on experience in building responsive web applications using <strong class="text-cyber-blue">React</strong>, <strong class="text-cyber-blue">Node.js</strong>, <strong class="text-cyber-blue">Express.js</strong>, <strong class="text-cyber-blue">MongoDB</strong>, and <strong class="text-cyber-blue">TypeScript</strong>.
+                        </p>
+                        <p class="text-slate-400 leading-relaxed text-sm">
+                            Passionate about developing scalable, user-friendly solutions, continuously learning modern technologies like Docker, Kubernetes, microservices, and AI integrations, while contributing as a high-velocity software engineer.
+                        </p>
+                    </div>
+
+                    <!-- Quick Spec Badges -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8 pt-6 border-t border-slate-800">
+                        <div class="p-3 bg-cyber-dark/80 rounded-xl border border-slate-800 text-center">
+                            <div class="text-xs font-mono text-slate-500">Location</div>
+                            <div class="text-sm font-semibold text-white mt-1">Delhi, India</div>
+                        </div>
+                        <div class="p-3 bg-cyber-dark/80 rounded-xl border border-slate-800 text-center">
+                            <div class="text-xs font-mono text-slate-500">Role</div>
+                            <div class="text-sm font-semibold text-cyber-blue mt-1">Full Stack AI</div>
+                        </div>
+                        <div class="p-3 bg-cyber-dark/80 rounded-xl border border-slate-800 text-center">
+                            <div class="text-xs font-mono text-slate-500">Language</div>
+                            <div class="text-sm font-semibold text-white mt-1">Hindi, English</div>
+                        </div>
+                        <div class="p-3 bg-cyber-dark/80 rounded-xl border border-slate-800 text-center">
+                            <div class="text-xs font-mono text-slate-500">Degree</div>
+                            <div class="text-sm font-semibold text-cyber-pink mt-1">Pursuing BCA</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact & Bio Card -->
+                <div class="lg:col-span-5 glass-panel p-8 rounded-2xl flex flex-col justify-between border-cyber-purple/30">
+                    <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                        <i data-lucide="contact" class="w-5 h-5 text-cyber-purple"></i> Personal Information
+                    </h3>
+
+                    <div class="space-y-4 font-mono text-sm">
+                        <div class="flex items-start gap-3">
+                            <i data-lucide="map-pin" class="w-5 h-5 text-cyber-pink shrink-0 mt-0.5"></i>
+                            <div>
+                                <span class="text-slate-500 block text-xs">Address</span>
+                                <span class="text-slate-300 text-xs">Plot No 23, Kh.No.617 Gr Floor, Kirari Suleman Nagar, Blk-D Hari Enclave Ph 1, Delhi-110041</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="mail" class="w-5 h-5 text-cyber-blue shrink-0"></i>
+                            <div>
+                                <span class="text-slate-500 block text-xs">Email</span>
+                                <a href="mailto:kaifidrishi1561@gmail.com" class="text-cyber-blue hover:underline">kaifidrishi1561@gmail.com</a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="phone" class="w-5 h-5 text-cyber-green shrink-0"></i>
+                            <div>
+                                <span class="text-slate-500 block text-xs">Phone</span>
+                                <a href="tel:8595701455" class="text-cyber-green hover:underline">+91 8595701455</a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="calendar" class="w-5 h-5 text-cyber-purple shrink-0"></i>
+                            <div>
+                                <span class="text-slate-500 block text-xs">Date of Birth</span>
+                                <span class="text-slate-300">26-11-2005</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 pt-4 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400 font-mono">
+                        <span>Nationality: Indian</span>
+                        <span class="text-cyber-blue">Active & Open to Work</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience & Education Section -->
+        <section id="experience" class="py-24 px-6 max-w-7xl mx-auto">
+            <div class="flex items-center space-x-3 mb-12">
+                <span class="text-cyber-pink font-mono text-lg font-bold">02.</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-white tracking-wide">EXPERIENCE & EDUCATION</h2>
+                <div class="h-[1px] flex-1 bg-gradient-to-r from-cyber-pink/30 to-transparent"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Work Experience Column -->
+                <div>
+                    <h3 class="text-xl font-mono font-bold text-cyber-blue mb-6 flex items-center gap-2">
+                        <i data-lucide="briefcase" class="w-5 h-5"></i> Work Experience
+                    </h3>
+
+                    <div class="space-y-6 relative border-l-2 border-cyber-blue/30 pl-6 ml-3">
+                        <!-- Role 1 -->
+                        <div class="relative group">
+                            <div class="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-cyber-dark border-2 border-cyber-blue group-hover:bg-cyber-blue transition-colors"></div>
+                            <div class="glass-panel p-5 rounded-xl border border-slate-800">
+                                <div class="flex flex-wrap justify-between items-baseline mb-1">
+                                    <h4 class="text-lg font-bold text-white">Backend Executive</h4>
+                                    <span class="text-xs font-mono text-cyber-blue px-2.5 py-0.5 rounded-full bg-cyber-blue/10 border border-cyber-blue/20">03/2025 - 05/2025</span>
+                                </div>
+                                <div class="text-sm font-mono text-slate-400 mb-2">Pace Setter • Moti Nagar</div>
+                                <p class="text-slate-300 text-sm">
+                                    Executed backend operations, database entry verifications, managed administrative workflows, and assisted in system process optimizations.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Role 2 -->
+                        <div class="relative group">
+                            <div class="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-cyber-dark border-2 border-cyber-purple group-hover:bg-cyber-purple transition-colors"></div>
+                            <div class="glass-panel p-5 rounded-xl border border-slate-800">
+                                <div class="flex flex-wrap justify-between items-baseline mb-1">
+                                    <h4 class="text-lg font-bold text-white">Data Entry Operator</h4>
+                                    <span class="text-xs font-mono text-cyber-purple px-2.5 py-0.5 rounded-full bg-cyber-purple/10 border border-cyber-purple/20">05/2025 - 11/2025</span>
+                                </div>
+                                <div class="text-sm font-mono text-slate-400 mb-2">Desire Planet • Peeragarhi</div>
+                                <p class="text-slate-300 text-sm">
+                                    Managed high-precision data record structures, reporting accuracy with Advanced Excel and spreadsheet automations for corporate datasets.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Education Column -->
+                <div>
+                    <h3 class="text-xl font-mono font-bold text-cyber-pink mb-6 flex items-center gap-2">
+                        <i data-lucide="graduation-cap" class="w-5 h-5"></i> Education
+                    </h3>
+
+                    <div class="space-y-6 relative border-l-2 border-cyber-pink/30 pl-6 ml-3">
+                        <!-- Degree 1 -->
+                        <div class="relative group">
+                            <div class="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-cyber-dark border-2 border-cyber-pink group-hover:bg-cyber-pink transition-colors"></div>
+                            <div class="glass-panel p-5 rounded-xl border border-slate-800">
+                                <div class="flex flex-wrap justify-between items-baseline mb-1">
+                                    <h4 class="text-lg font-bold text-white">Bachelor of Computer Applications (BCA)</h4>
+                                    <span class="text-xs font-mono text-cyber-pink px-2.5 py-0.5 rounded-full bg-cyber-pink/10 border border-cyber-pink/20">2023 - Present</span>
+                                </div>
+                                <div class="text-sm font-mono text-slate-400 mb-2">Undergraduate Degree</div>
+                                <p class="text-slate-300 text-sm">
+                                    Deepening expertise in Software Engineering, Data Structures, Web Architectures, Database Systems & Intelligent Computing.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Degree 2 -->
+                        <div class="relative group">
+                            <div class="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-cyber-dark border-2 border-teal-400 group-hover:bg-teal-400 transition-colors"></div>
+                            <div class="glass-panel p-5 rounded-xl border border-slate-800">
+                                <div class="flex flex-wrap justify-between items-baseline mb-1">
+                                    <h4 class="text-lg font-bold text-white">Senior Secondary (12th Pass)</h4>
+                                    <span class="text-xs font-mono text-teal-400 px-2.5 py-0.5 rounded-full bg-teal-400/10 border border-teal-400/20">2022 - 2023</span>
+                                </div>
+                                <p class="text-slate-300 text-sm">Completed Higher Secondary Education with focus on fundamental computing and analytics.</p>
+                            </div>
+                        </div>
+
+                        <!-- Degree 3 -->
+                        <div class="relative group">
+                            <div class="absolute -left-[31px] top-1.5 w-4 h-4 rounded-full bg-cyber-dark border-2 border-slate-500 group-hover:bg-slate-500 transition-colors"></div>
+                            <div class="glass-panel p-5 rounded-xl border border-slate-800">
+                                <div class="flex flex-wrap justify-between items-baseline mb-1">
+                                    <h4 class="text-lg font-bold text-white">Secondary School (10th Pass)</h4>
+                                    <span class="text-xs font-mono text-slate-400 px-2.5 py-0.5 rounded-full bg-slate-800">2020 - 2021</span>
+                                </div>
+                                <p class="text-slate-300 text-sm">Foundational schooling completed with academic distinction.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="py-24 px-6 max-w-7xl mx-auto">
+            <div class="flex items-center space-x-3 mb-12">
+                <span class="text-cyber-green font-mono text-lg font-bold">03.</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-white tracking-wide">FEATURED PROJECTS</h2>
+                <div class="h-[1px] flex-1 bg-gradient-to-r from-cyber-green/30 to-transparent"></div>
+            </div>
+
+            <!-- Project Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- Project 1: ResumePilot-AI -->
+                <div class="glass-panel rounded-2xl p-6 flex flex-col justify-between border-cyber-blue/30 group hover:border-cyber-blue">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="p-2.5 bg-cyber-blue/10 border border-cyber-blue/30 rounded-xl text-cyber-blue">
+                                <i data-lucide="bot" class="w-6 h-6"></i>
+                            </span>
+                            <a href="https://github.com/kaifidrishi1561-png/ResumePilot-Al" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-cyber-blue transition-colors">
+                                <i data-lucide="external-link" class="w-5 h-5"></i>
+                            </a>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-cyber-blue transition-colors mb-2">ResumePilot-AI</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                            AI-powered web app analyzing resumes, self-descriptions, and JDs. Computes match scores, pinpoints skill gaps, drafts interview Q&As with answers, and offers automated Puppeteer one-click PDF generation.
+                        </p>
+                    </div>
+                    <div>
+                        <div class="flex flex-wrap gap-1.5 mb-4 font-mono text-[11px]">
+                            <span class="px-2 py-0.5 rounded bg-slate-800 text-cyber-blue">AI/ML</span>
+                            <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">Puppeteer</span>
+                            <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">Auth/JWT</span>
+                            <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">React</span>
+                        </div>
+                        <a href="https://github.com/kaifidrishi1561-png/ResumePilot-Al" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center gap-2 py-2 text-xs font-mono font-bold text-cyber-blue bg-cyber-blue/10 hover:bg-cyber-blue hover:text-black rounded-lg transition-all">
+                            <i data-lucide="github" class="w-4 h-4"></i> View Source Code
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 2: Food Production Website -->
+                <div class="glass-panel rounded-2xl p-6 flex flex-col justify-between border-cyber-pink/30 group hover:border-cyber-pink">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="p-2.5 bg-cyber-pink/10 border border-cyber-pink/30 rounded-xl text-cyber-pink">
+                                <i data-lucide="utensils" class="w-6 h-6"></i>
+                            </span>
+                            <a href="https://github.com/kaifidrishi1561-png/food_production_website" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-cyber-pink transition-colors">
+                                <i data-lucide="external-link" class="w-5 h-5"></i>
+                            </a>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-cyber-pink transition-colors mb-2">Food Production Website</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                            Complete restaurant food-ordering platform with client checkout cart, admin CRUD for menus/restaurants, Cloudinary image upload, Mailtrap email verification, and Zustand/custom store state management.
+                        </p>
+                    </div>
+                    <div>
+                        <div class="flex flex-wrap gap-1.5 mb-4 font-mono text-[11px]">
+                            <span class="px-2 py-0.5 rounded bg-slate-800 text-cyber-pink">React+Vite</span>
+                            <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">TypeScript</span>
+                            <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">Node/Express</span>
+                            <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">Cloudinary</span>
+                        </div>
+                        <a href="https://github.com/kaifidrishi1561-png/food_production_website" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center gap-2 py-2 text-xs font-mono font-bold text-cyber-pink bg-cyber-pink/10 hover:bg-cyber-pink hover:text-white rounded-lg transition-all">
+                            <i data-lucide="github" class="w-4 h-4"></i> View Source Code
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 3: YouTube Clone Backend -->
+                <div class="glass-panel rounded-2xl p-6 flex flex-col justify-between border-cyber-purple/30 group hover:border-cyber-purple">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="p-2.5 bg-cyber-purple/10 border border-cyber-purple/30 rounded-xl text-cyber-purple">
+                                <i data-lucide="video" class="w-6 h-6"></i>
+                            </span>
+                            <a href="https://github.com/kaifidrishi1561-png/youtube-clone-backend" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-cyber-purple transition-colors">
+                                <i data-lucide="external-link" class="w-5 h-5"></i>
+                            </a>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-cyber-purple transition-colors mb-2">YouTube Clone Backend</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                            Scalable backend architecture featuring JWT authentication, video management, playlists, subscriptions, comments, and MongoDB Aggregation Pipelines for high-performance querying.
+                        </p>
+                    </div>
+                    <div>
+                        <div class="flex flex-wrap gap-1.5 mb-4 font-mono text-[11px]">
+                            <span class="px-2 py-0.5 rounded bg-slate-800 text-cyber-purple">Node.js</span>
+                            <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">MongoDB Pipeline</span>
+                            <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">JWT Auth</span>
+                            <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">REST APIs</span>
+                        </div>
+                        <a href="https://github.com/kaifidrishi1561-png/youtube-clone-backend" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center gap-2 py-2 text-xs font-mono font-bold text-cyber-purple bg-cyber-purple/10 hover:bg-cyber-purple hover:text-white rounded-lg transition-all">
+                            <i data-lucide="github" class="w-4 h-4"></i> View Source Code
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 4: Photoshop Software Web App -->
+                <div class="glass-panel rounded-2xl p-6 flex flex-col justify-between group">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="p-2.5 bg-cyber-green/10 border border-cyber-green/30 rounded-xl text-cyber-green">
+                                <i data-lucide="image" class="w-6 h-6"></i>
+                            </span>
+                            <a href="https://photoshop-software.vercel.app/" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-cyber-green transition-colors">
+                                <i data-lucide="globe" class="w-5 h-5"></i>
+                            </a>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-cyber-green transition-colors mb-2">Photoshop Software Web App</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                            Full-stack photo editing & batch printing application in Next.js/React. Adjust brightness, contrast, saturation, auto-generate print grids (30 photos per page), with high-res JPG/ZIP download.
+                        </p>
+                    </div>
+                    <div>
+                        <div class="flex flex-wrap gap-1.5 mb-4 font-mono text-[11px]">
+                            <span class="px-2 py-0.5 rounded bg-slate-800 text-cyber-green">Next.js</span>
+                            <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">Canvas</span>
+                            <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">Vercel Live</span>
+                        </div>
+                        <a href="https://photoshop-software.vercel.app/" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center gap-2 py-2 text-xs font-mono font-bold text-cyber-green bg-cyber-green/10 hover:bg-cyber-green hover:text-black rounded-lg transition-all">
+                            <i data-lucide="play" class="w-4 h-4"></i> Live Demo Preview
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 5: Password Manager -->
+                <div class="glass-panel rounded-2xl p-6 flex flex-col justify-between group">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="p-2.5 bg-blue-500/10 border border-blue-500/30 rounded-xl text-blue-400">
+                                <i data-lucide="key" class="w-6 h-6"></i>
+                            </span>
+                            <a href="https://github.com/kaifidrishi1561-png/Password-manager" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-blue-400 transition-colors">
+                                <i data-lucide="external-link" class="w-5 h-5"></i>
+                            </a>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-blue-400 transition-colors mb-2">Password Manager</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                            Secure credential management tool with search, real-time edit/delete capabilities, credential masking, and persistent browser local storage sync.
+                        </p>
+                    </div>
+                    <div>
+                        <div class="flex flex-wrap gap-1.5 mb-4 font-mono text-[11px]">
+                            <span class="px-2 py-0.5 rounded bg-slate-800 text-blue-400">Security</span>
+                            <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">JavaScript</span>
+                            <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">LocalStorage</span>
+                        </div>
+                        <a href="https://github.com/kaifidrishi1561-png/Password-manager" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center gap-2 py-2 text-xs font-mono font-bold text-blue-400 bg-blue-500/10 hover:bg-blue-500 hover:text-white rounded-lg transition-all">
+                            <i data-lucide="github" class="w-4 h-4"></i> View Source Code
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Project 6: Netflix Clone & To-Do List -->
+                <div class="glass-panel rounded-2xl p-6 flex flex-col justify-between group">
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="p-2.5 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400">
+                                <i data-lucide="film" class="w-6 h-6"></i>
+                            </span>
+                            <div class="flex gap-2">
+                                <a href="https://github.com/kaifidrishi1561-png/TodoList" target="_blank" title="TodoList" class="text-slate-400 hover:text-cyber-blue"><i data-lucide="check-square" class="w-4 h-4"></i></a>
+                                <a href="https://github.com/kaifidrishi1561-png/Netflix-clone" target="_blank" title="Netflix Clone" class="text-slate-400 hover:text-red-400"><i data-lucide="external-link" class="w-5 h-5"></i></a>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-bold text-white group-hover:text-red-400 transition-colors mb-2">Netflix Clone & UI Suite</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-4">
+                            High-fidelity recreation of Netflix streaming UI with responsive banners, category rows, alongside productivity suites like task-tracking To-Do apps with persistent states.
+                        </p>
+                    </div>
+                    <div>
+                        <div class="flex flex-wrap gap-1.5 mb-4 font-mono text-[11px]">
+                            <span class="px-2 py-0.5 rounded bg-slate-800 text-red-400">Responsive UI</span>
+                            <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">Modern CSS</span>
+                            <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">DOM Engine</span>
+                        </div>
+                        <a href="https://github.com/kaifidrishi1561-png/Netflix-clone" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center gap-2 py-2 text-xs font-mono font-bold text-red-400 bg-red-500/10 hover:bg-red-500 hover:text-white rounded-lg transition-all">
+                            <i data-lucide="github" class="w-4 h-4"></i> View Repositories
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Technical Skills Section -->
+        <section id="skills" class="py-24 px-6 max-w-7xl mx-auto">
+            <div class="flex items-center space-x-3 mb-12">
+                <span class="text-cyber-purple font-mono text-lg font-bold">04.</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-white tracking-wide">TECHNICAL SKILLS</h2>
+                <div class="h-[1px] flex-1 bg-gradient-to-r from-cyber-purple/30 to-transparent"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                <!-- Frontend -->
+                <div class="glass-panel p-6 rounded-2xl border-cyber-blue/30">
+                    <div class="w-10 h-10 rounded-xl bg-cyber-blue/10 flex items-center justify-center text-cyber-blue mb-4">
+                        <i data-lucide="layout" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-4">Frontend Engineering</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">React.js</span>
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">Next.js</span>
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">TypeScript</span>
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">JavaScript</span>
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">HTML5</span>
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">CSS3 / Tailwind</span>
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">React Native</span>
+                    </div>
+                </div>
+
+                <!-- Backend -->
+                <div class="glass-panel p-6 rounded-2xl border-cyber-pink/30">
+                    <div class="w-10 h-10 rounded-xl bg-cyber-pink/10 flex items-center justify-center text-cyber-pink mb-4">
+                        <i data-lucide="server" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-4">Backend & Databases</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">Node.js</span>
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">Express.js</span>
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">MongoDB</span>
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">RESTful APIs</span>
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">JWT & Auth</span>
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">System Design</span>
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">DSA</span>
+                    </div>
+                </div>
+
+                <!-- DevOps & Cloud -->
+                <div class="glass-panel p-6 rounded-2xl border-cyber-green/30">
+                    <div class="w-10 h-10 rounded-xl bg-cyber-green/10 flex items-center justify-center text-cyber-green mb-4">
+                        <i data-lucide="cloud" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-4">DevOps & Cloud</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">Docker</span>
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">Kubernetes</span>
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">Jenkins</span>
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">Git</span>
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">GitHub</span>
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">CI/CD Pipeline</span>
+                    </div>
+                </div>
+
+                <!-- Tools & Productivity -->
+                <div class="glass-panel p-6 rounded-2xl border-cyber-purple/30">
+                    <div class="w-10 h-10 rounded-xl bg-cyber-purple/10 flex items-center justify-center text-cyber-purple mb-4">
+                        <i data-lucide="sliders" class="w-5 h-5"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-4">Tools & Productivity</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">Advance Excel</span>
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">PowerPoint</span>
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">MS Word</span>
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">Puppeteer</span>
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">Vercel</span>
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">Postman</span>
+                        <span class="px-3 py-1 bg-cyber-dark text-xs font-mono text-slate-300 rounded-lg border border-slate-800">render</span>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-24 px-6 max-w-7xl mx-auto">
+            <div class="flex items-center space-x-3 mb-12">
+                <span class="text-cyber-blue font-mono text-lg font-bold">05.</span>
+                <h2 class="text-3xl md:text-4xl font-bold text-white tracking-wide">GET IN TOUCH</h2>
+                <div class="h-[1px] flex-1 bg-gradient-to-r from-cyber-blue/30 to-transparent"></div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Contact Direct info -->
+                <div class="lg:col-span-5 glass-panel p-8 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold text-white mb-4">Let's collaborate on your next project!</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-8">
+                            Whether you're looking for a Full Stack Developer, backend architect, or AI integration engineer, my inbox is always open.
+                        </p>
+
+                        <div class="space-y-5 font-mono text-sm">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-lg bg-cyber-blue/10 border border-cyber-blue/30 flex items-center justify-center text-cyber-blue">
+                                    <i data-lucide="mail" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-slate-500 block">Direct Email</span>
+                                    <a href="mailto:kaifidrishi1561@gmail.com" class="text-white hover:text-cyber-blue">kaifidrishi1561@gmail.com</a>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-lg bg-cyber-green/10 border border-cyber-green/30 flex items-center justify-center text-cyber-green">
+                                    <i data-lucide="phone-call" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-slate-500 block">Contact Phone</span>
+                                    <a href="tel:8595701455" class="text-white hover:text-cyber-green">+91 8595701455</a>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-lg bg-cyber-pink/10 border border-cyber-pink/30 flex items-center justify-center text-cyber-pink">
+                                    <i data-lucide="map-pin" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <span class="text-xs text-slate-500 block">Location</span>
+                                    <span class="text-white">Kirari Suleman Nagar, Delhi - 110041, India</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Copy Contact Buttons -->
+                    <div class="mt-8 pt-6 border-t border-slate-800 flex gap-3">
+                        <button id="copy-email-btn" class="flex-1 py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-mono text-slate-200 transition-colors flex items-center justify-center gap-2">
+                            <i data-lucide="copy" class="w-4 h-4"></i> Copy Email
+                        </button>
+                        <button id="copy-phone-btn" class="flex-1 py-2.5 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-mono text-slate-200 transition-colors flex items-center justify-center gap-2">
+                            <i data-lucide="clipboard" class="w-4 h-4"></i> Copy Phone
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Contact Interactive Form -->
+                <div class="lg:col-span-7 glass-panel p-8 rounded-2xl relative">
+                    <form id="contact-form" class="space-y-5">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-xs font-mono text-slate-400 mb-2">YOUR NAME</label>
+                                <input type="text" id="sender-name" required placeholder="John Doe" class="w-full bg-cyber-dark border border-slate-800 rounded-xl px-4 py-3 text-white text-sm focus:border-cyber-blue focus:outline-none focus:ring-1 focus:ring-cyber-blue transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono text-slate-400 mb-2">EMAIL ADDRESS</label>
+                                <input type="email" id="sender-email" required placeholder="john@example.com" class="w-full bg-cyber-dark border border-slate-800 rounded-xl px-4 py-3 text-white text-sm focus:border-cyber-blue focus:outline-none focus:ring-1 focus:ring-cyber-blue transition-colors">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 mb-2">SUBJECT</label>
+                            <input type="text" id="sender-subject" required placeholder="Project Inquiry / Job Opportunity" class="w-full bg-cyber-dark border border-slate-800 rounded-xl px-4 py-3 text-white text-sm focus:border-cyber-blue focus:outline-none focus:ring-1 focus:ring-cyber-blue transition-colors">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-mono text-slate-400 mb-2">MESSAGE</label>
+                            <textarea id="sender-message" rows="4" required placeholder="Hi Kaifi, I would like to discuss..." class="w-full bg-cyber-dark border border-slate-800 rounded-xl px-4 py-3 text-white text-sm focus:border-cyber-blue focus:outline-none focus:ring-1 focus:ring-cyber-blue transition-colors resize-none"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-3.5 rounded-xl font-mono font-bold text-black bg-gradient-to-r from-cyber-blue via-teal-300 to-cyber-green hover:shadow-[0_0_20px_#00f0ff] transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                            <i data-lucide="send" class="w-4 h-4"></i> Dispatch Transmission
+                        </button>
+                    </form>
+
+                    <!-- Feedback message box -->
+                    <div id="form-feedback" class="hidden mt-4 p-3 rounded-xl bg-cyber-green/20 border border-cyber-green text-cyber-green text-sm text-center font-mono">
+                        Message sent successfully! Opening email client...
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-slate-800/80 py-8 px-6 text-center text-xs font-mono text-slate-500 relative z-10 glass-panel">
+            <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                    © 2026 Kaifidrishi. Designed with Three.js 3D & Modern Cyberpunk Aesthetics.
+                </div>
+                <div class="flex items-center space-x-6 text-slate-400">
+                    <a href="https://github.com/kaifidrishi1561-png" target="_blank" class="hover:text-cyber-blue">GitHub</a>
+                    <a href="mailto:kaifidrishi1561@gmail.com" class="hover:text-cyber-pink">Email</a>
+                    <a href="tel:8595701455" class="hover:text-cyber-green">+91 8595701455</a>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        /* Lucide icon initialiser */
+        lucide.createIcons();
+
+        /* Mobile Menu Toggle */
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileBtn && mobileMenu) {
+            mobileBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+
+        /* Typewriter Animation for Hero Section */
+        const typewriterPhrases = [
+            "Full Stack AI Platforms",
+            "Scalable Node & Mongo Backends",
+            "Modern React & Next.js Apps",
+            "Docker & Microservice Pipelines",
+            "Custom AI Resume Evaluators"
+        ];
+        let phraseIdx = 0;
+        let charIdx = 0;
+        let isDeleting = false;
+        const typewriterEl = document.getElementById('typewriter');
+
+        function typeLoop() {
+            const currentPhrase = typewriterPhrases[phraseIdx];
+            if (isDeleting) {
+                typewriterEl.textContent = currentPhrase.substring(0, charIdx - 1);
+                charIdx--;
+            } else {
+                typewriterEl.textContent = currentPhrase.substring(0, charIdx + 1);
+                charIdx++;
+            }
+
+            let typeSpeed = isDeleting ? 40 : 80;
+
+            if (!isDeleting && charIdx === currentPhrase.length) {
+                typeSpeed = 1800;
+                isDeleting = true;
+            } else if (isDeleting && charIdx === 0) {
+                isDeleting = false;
+                phraseIdx = (phraseIdx + 1) % typewriterPhrases.length;
+                typeSpeed = 400;
+            }
+
+            setTimeout(typeLoop, typeSpeed);
+        }
+        typeLoop();
+
+        let scene, camera, renderer, particles, floatingMeshGroup;
+        let mouseX = 0, mouseY = 0;
+        let targetX = 0, targetY = 0;
+        const windowHalfX = window.innerWidth / 2;
+        const windowHalfY = window.innerHeight / 2;
+
+        function initThreeJS() {
+            const canvas = document.getElementById('bg-canvas');
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 3000);
+            camera.position.z = 1000;
+
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            // Starfield Particle Geometry
+            const particleCount = 1200;
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+
+            const colorOptions = [
+                new THREE.Color(0x00f0ff), // Cyan
+                new THREE.Color(0x8a2be2), // Purple
+                new THREE.Color(0xff007f), // Pink
+                new THREE.Color(0x00ff88)  // Neon Green
+            ];
+
+            for (let i = 0; i < particleCount * 3; i += 3) {
+                positions[i] = (Math.random() - 0.5) * 2200;
+                positions[i + 1] = (Math.random() - 0.5) * 2200;
+                positions[i + 2] = (Math.random() - 0.5) * 2200;
+
+                const chosenColor = colorOptions[Math.floor(Math.random() * colorOptions.length)];
+                colors[i] = chosenColor.r;
+                colors[i + 1] = chosenColor.g;
+                colors[i + 2] = chosenColor.b;
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            // Particle Texture Generation (Soft circle)
+            const pCanvas = document.createElement('canvas');
+            pCanvas.width = 16;
+            pCanvas.height = 16;
+            const pCtx = pCanvas.getContext('2d');
+            const gradient = pCtx.createRadialGradient(8, 8, 0, 8, 8, 8);
+            gradient.addColorStop(0, 'rgba(255,255,255,1)');
+            gradient.addColorStop(1, 'rgba(255,255,255,0)');
+            pCtx.fillStyle = gradient;
+            pCtx.fillRect(0, 0, 16, 16);
+            const pTexture = new THREE.CanvasTexture(pCanvas);
+
+            const pMaterial = new THREE.PointsMaterial({
+                size: 6,
+                vertexColors: true,
+                map: pTexture,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+
+            particles = new THREE.Points(geometry, pMaterial);
+            scene.add(particles);
+
+            // Floating 3D Geometric Meshes Group
+            floatingMeshGroup = new THREE.Group();
+
+            // Wireframe Icosahedron
+            const icoGeo = new THREE.IcosahedronGeometry(110, 1);
+            const icoMat = new THREE.MeshBasicMaterial({ color: 0x00f0ff, wireframe: true, transparent: true, opacity: 0.35 });
+            const icoMesh = new THREE.Mesh(icoGeo, icoMat);
+            icoMesh.position.set(380, 150, -200);
+            floatingMeshGroup.add(icoMesh);
+
+            // Wireframe Torus
+            const torusGeo = new THREE.TorusGeometry(100, 24, 16, 60);
+            const torusMat = new THREE.MeshBasicMaterial({ color: 0xff007f, wireframe: true, transparent: true, opacity: 0.3 });
+            const torusMesh = new THREE.Mesh(torusGeo, torusMat);
+            torusMesh.position.set(-360, -120, -150);
+            floatingMeshGroup.add(torusMesh);
+
+            // Wireframe Octahedron
+            const octGeo = new THREE.OctahedronGeometry(90, 0);
+            const octMat = new THREE.MeshBasicMaterial({ color: 0x8a2be2, wireframe: true, transparent: true, opacity: 0.35 });
+            const octMesh = new THREE.Mesh(octGeo, octMat);
+            octMesh.position.set(280, -260, -100);
+            floatingMeshGroup.add(octMesh);
+
+            scene.add(floatingMeshGroup);
+
+            // Event Listeners
+            window.addEventListener('resize', onWindowResize, false);
+            document.addEventListener('mousemove', onMouseMove, false);
+            document.addEventListener('touchmove', onTouchMove, { passive: true });
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function onMouseMove(event) {
+            mouseX = (event.clientX - windowHalfX) * 0.7;
+            mouseY = (event.clientY - windowHalfY) * 0.7;
+        }
+
+        function onTouchMove(event) {
+            if (event.touches.length > 0) {
+                mouseX = (event.touches[0].clientX - windowHalfX) * 0.5;
+                mouseY = (event.touches[0].clientY - windowHalfY) * 0.5;
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            targetX += (mouseX - targetX) * 0.05;
+            targetY += (mouseY - targetY) * 0.05;
+
+            // Camera subtle parallax
+            camera.position.x = targetX * 0.4;
+            camera.position.y = -targetY * 0.4;
+            camera.lookAt(scene.position);
+
+            // Particle rotation
+            if (particles) {
+                particles.rotation.y += 0.0008;
+                particles.rotation.x += 0.0004;
+            }
+
+            // Geometric Meshes rotation
+            if (floatingMeshGroup) {
+                floatingMeshGroup.children.forEach((mesh, index) => {
+                    mesh.rotation.x += 0.005 * (index + 1);
+                    mesh.rotation.y += 0.007 * (index + 1);
+                });
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        window.onload = function() {
+            initThreeJS();
+            animate();
+        };
+
+        function copyToClipboard(text, successMsg) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                const feedback = document.getElementById('form-feedback');
+                feedback.textContent = successMsg;
+                feedback.classList.remove('hidden');
+                setTimeout(() => feedback.classList.add('hidden'), 3500);
+            } catch (err) {
+                console.error('Copy failed:', err);
+            }
+            document.body.removeChild(textarea);
+        }
+
+        document.getElementById('copy-email-btn')?.addEventListener('click', () => {
+            copyToClipboard('kaifidrishi1561@gmail.com', 'Copied "kaifidrishi1561@gmail.com" to clipboard!');
+        });
+
+        document.getElementById('copy-phone-btn')?.addEventListener('click', () => {
+            copyToClipboard('8595701455', 'Copied "+91 8595701455" to clipboard!');
+        });
+
+        // Contact Form Submission Action
+        const contactForm = document.getElementById('contact-form');
+        contactForm?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('sender-name').value;
+            const email = document.getElementById('sender-email').value;
+            const subject = document.getElementById('sender-subject').value;
+            const message = document.getElementById('sender-message').value;
+
+            const mailtoUrl = `mailto:kaifidrishi1561@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Hi Kaifi,\n\nName: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;
+            
+            const feedback = document.getElementById('form-feedback');
+            feedback.textContent = `Thank you ${name}! Launching your mail client...`;
+            feedback.classList.remove('hidden');
+
+            window.location.href = mailtoUrl;
+            contactForm.reset();
+        });
+    </script>
+</body>
+</html>
